@@ -11,8 +11,8 @@ class MovieController extends Controller
     // Menampilkan daftar film
     public function index()
     {
-        $movies = Movie::all();
-        return view('movies.index', compact('movies'));
+        $movies = Movie::all(); // Atau sesuai query Anda
+        return view('master', compact('movies'));
     }
 
     // Menampilkan form untuk membuat film baru
@@ -28,30 +28,30 @@ class MovieController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'synopsis' => 'required|string',
-            'year' => 'required|integer',
-            'genre_id' => 'required|uuid|exists:genres,id',
-            'poster' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'poster' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+            'year' => 'required|integer|digits:4',
+            'genre_id' => 'required|exists:genres,id',
         ]);
-
-        $data = $request->all();
-
-        // Handle file upload if there's a poster
+    
+        $movie = new Movie($request->only(['title', 'synopsis', 'year', 'genre_id']));
+        $movie->available = $request->has('available');
+    
         if ($request->hasFile('poster')) {
-            $data['poster'] = $request->file('poster')->store('posters', 'public');
+            $movie->poster = $request->file('poster')->store('posters', 'public');
         }
-
-        Movie::create($data);
-
-        return redirect()->route('movies.index')->with('success', 'Film berhasil ditambahkan');
+    
+        $movie->save();
+    
+        return redirect()->route('movies.index')->with('success', 'Film berhasil ditambahkan!');
     }
 
     // Menampilkan form untuk mengedit film
-    public function edit(Movie $movie)
+    public function edit($id)
     {
-        $genres = Genre::all();
+        $movie = Movie::findOrFail($id);
+        $genres = Genre::all(); // Ambil semua genre
         return view('movies.edit', compact('movie', 'genres'));
     }
-
     // Mengupdate data film
     public function update(Request $request, Movie $movie)
     {

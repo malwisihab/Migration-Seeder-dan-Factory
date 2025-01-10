@@ -23,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('genres');
-    }
+        Schema::table('movies', function (Blueprint $table) {
+            $table->dropForeign(['genre_id']);
+            $table->dropColumn('genre_id');
+        });    }
 };

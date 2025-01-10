@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\MovieController;
+use App\Http\Controllers\GenreController;
+use App\Models\Movie;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +17,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Jangan lupa import / use BookContoller
 Route::get('/', function () {
-    return view('welcome');
+    return view('master');
 });
+
+Route::resource('users', UserController::class);
+Route::resource('movies', MovieController::class);
+Route::resource('genres', GenreController::class);
+Route::put('/genres/{id}', [GenreController::class, 'update'])->name('genres.update');
+
+

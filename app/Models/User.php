@@ -14,14 +14,8 @@ class User extends Authenticatable
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'email_verified_at',
-        'role_id',
-    ];
+     */    protected $fillable = ['name', 'email', 'password', 'role_id'];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -45,10 +39,7 @@ class User extends Authenticatable
     /**
      * Relationship to the Role model.
      */
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
+   
 
     /**
      * Relationship to the Profile model.
